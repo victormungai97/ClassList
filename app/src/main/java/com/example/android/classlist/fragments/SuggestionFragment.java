@@ -19,11 +19,15 @@ import android.widget.Toast;
 import com.example.android.classlist.R;
 import com.example.android.classlist.activities.SuggestionActivity;
 import com.example.android.classlist.activities.LoginActivity;
-import com.example.android.classlist.others.Extras;
+import com.example.android.classlist.others.Other.Extras;
 import com.example.android.classlist.others.Message;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+
+import static com.example.android.classlist.others.Other.Constants.*;
 // import static com.example.android.classlist.others.Post.processResults;
 
 /**
@@ -50,11 +54,11 @@ public class SuggestionFragment extends Fragment implements AdapterView.OnItemSe
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_suggestion, container, false);
 
-        mEditText = (EditText) view.findViewById(R.id.editText);
-        spinner = (Spinner) view.findViewById(R.id.spinner1);
+        mEditText = view.findViewById(R.id.editText);
+        spinner = view.findViewById(R.id.spinner1);
         spinner.setOnItemSelectedListener(this);
-        fab = (FloatingActionButton) view.findViewById(R.id.fab_send);
-        mServerUrl = (EditText) view.findViewById(R.id.suggest_ur);
+        fab = view.findViewById(R.id.fab_send);
+        mServerUrl = view.findViewById(R.id.suggest_ur);
         mServerUrl.setText(URL_TO_SEND_DATA);
 
         if (mServerUrl.toString().length() == 0)
@@ -111,9 +115,10 @@ public class SuggestionFragment extends Fragment implements AdapterView.OnItemSe
     @Override
     public void onClick (View v){
         message = mEditText.getText().toString();
-        Message msg = new Message();
-        msg.setMessage(message);
-        msg.setChoice(choice);
+        HashMap<String, String> args = new HashMap<>();
+        args.put(SUGGESTION, message);
+        args.put(CHOICE, choice);
+        Message msg = new Message(args);
         try{
             new SendSuggestion().execute(msg);
             if (status == 0) {

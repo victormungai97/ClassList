@@ -33,7 +33,7 @@ import com.example.android.classlist.activities.RegisterActivity;
 import com.example.android.classlist.database.SignBaseHelper;
 import com.example.android.classlist.database.SignInCursorWrapper;
 import com.example.android.classlist.database.SignInDbSchema.SignInTable;
-import com.example.android.classlist.others.Extras;
+import com.example.android.classlist.others.Other.Extras;
 import com.example.android.classlist.others.Message;
 import com.example.android.classlist.others.Permissions;
 
@@ -42,7 +42,9 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import static com.example.android.classlist.others.Other.Constants.REG_NO;
 import static com.example.android.classlist.others.Post.getContentValues;
 // import static com.example.android.classlist.others.Post.processResults;
 
@@ -152,14 +154,10 @@ public class LoginFragment extends Fragment implements Extras {
 
         regWatcher = new MyTextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -276,8 +274,10 @@ public class LoginFragment extends Fragment implements Extras {
         protected Void doInBackground(String... strings) {
             String reg_no = strings[0];
             String url = strings[1];
+            HashMap<String, String> args = new HashMap<>();
+            args.put(REG_NO, reg_no);
 
-            Message msg = new Message(reg_no);
+            Message msg = new Message(args);
 
             String TAG = "RETRIEVAL SUCCESS ", ERROR = "Retrieval Error: ";
             JSONObject jsonObject = null;

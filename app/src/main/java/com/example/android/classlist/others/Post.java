@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
+import static com.example.android.classlist.others.Other.Constants.*;
+
 /**
  * Created by User on 4/28/2017.
  * Class contains methods for connection to database
@@ -29,21 +31,6 @@ import java.util.TreeSet;
  */
 
 public class Post {
-
-    // json keys
-    private static final String NAME = "name";
-    private static final String REG_NO = "regno";
-    private static final String PIC = "picture";
-    private static final String TIME = "time";
-    private static final String LATITUDE = "latitude";
-    private static final String LONGITUDE = "longitude";
-    private static final String LAC = "lac";
-    private static final String CI = "ci";
-    private static final String PHONE = "phone";
-    private static final String SUGGESTION = "suggestion";
-    private static final String CHOICE = "choice";
-    private static final String DEPARTMENTS = "departments";
-    private static final String ERROR = "ERROR";
 
     private static TreeSet<String> results = new TreeSet<>();
     private static JSONArray mJSONArray;
@@ -69,6 +56,8 @@ public class Post {
             JSONObject jsonObject = new JSONObject();
             jsonObject.accumulate(NAME, message.getName());
             jsonObject.accumulate(REG_NO, message.getReg_no());
+            jsonObject.accumulate(DEPARTMENT, message.getDepartment());
+            jsonObject.accumulate(YEAR, message.getYear());
             jsonObject.accumulate(TIME, message.getTime());
             jsonObject.accumulate(PIC, message.getPic());
             jsonObject.accumulate(LATITUDE,message.getLatitude());
@@ -140,7 +129,7 @@ public class Post {
                     // parse fetched Json String to JSON Object
                     jsonObject = new JSONObject(response);
                     // store results to JSON Array
-                    mJSONArray = jsonObject.getJSONArray(DEPARTMENTS);
+                    mJSONArray = jsonObject.getJSONArray(DEPARTMENT);
                     // pass JSON Array to retrieve content
                     getContent(mJSONArray);
                 } catch (JSONException ex){

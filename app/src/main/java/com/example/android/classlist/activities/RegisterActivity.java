@@ -9,4 +9,10 @@ public class RegisterActivity extends MainFragmentActivity {
     protected Fragment createFragment() {
         return new RegisterFragment();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

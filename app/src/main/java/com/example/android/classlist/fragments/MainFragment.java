@@ -37,7 +37,9 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import static com.example.android.classlist.others.Other.Constants.*;
 import static com.example.android.classlist.others.PictureUtilities.galleryAddPic;
 import static com.example.android.classlist.others.PictureUtilities.getImageUri;
 import static com.example.android.classlist.others.PictureUtilities.getRealPathFromURI;
@@ -77,13 +79,6 @@ public class MainFragment extends Fragment {
     String directory;
     Context mContext;
     String mCurrentPath;
-
-    private static final String TAG = "MainActivity";
-    private static final int REQUEST_PHOTO = 1;
-    private static final String ARG_USER_FULL_NAME = "com.example.android.classlist.full_name";
-    private static final String ARG_USER_REG_NUM = "com.example.android.classlist.reg_num";
-    private static final String ARG_USER_DIR = "com.example.android.classlist.directory";
-    private static final String URL_TO_SEND_DATA = "http://192.168.43.229:5000/fromapp/";
 
     /**
      * Accepts values sent to hosting activity, packs it in a bundle and returns a fragment
@@ -142,14 +137,10 @@ public class MainFragment extends Fragment {
 
         urlTextWatcher = new MyTextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -160,14 +151,10 @@ public class MainFragment extends Fragment {
 
         nameWatcher = new MyTextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -178,14 +165,10 @@ public class MainFragment extends Fragment {
 
         regWatcher = new MyTextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -230,10 +213,7 @@ public class MainFragment extends Fragment {
                 // pass connection state information
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
-                    public void onConnected(Bundle bundle) {
-                        /*Toast.makeText(MainActivity.this,"Connected",Toast.LENGTH_SHORT)
-                                .show();*/
-                    }
+                    public void onConnected(Bundle bundle) {}
 
                     @Override
                     public void onConnectionSuspended(int i) {
@@ -381,7 +361,6 @@ public class MainFragment extends Fragment {
     private void turnGPSOn(){
         mIsConnected = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (!mIsConnected){
-            //Toast.makeText(mContext,"This app needs GPS. Please turn on",Toast.LENGTH_SHORT).show();
             new Permissions().showSettingsAlert(mContext);
         }
     }
@@ -411,7 +390,18 @@ public class MainFragment extends Fragment {
             String url = jsonObjects[8];
             String phone = jsonObjects[9];
 
-            Message msg = new Message(name, reg_no, time, pic, latitude, longitude, lac, ci, phone);
+            HashMap<String, String> args = new HashMap<>();
+            args.put(REG_NO, reg_no);
+            args.put(NAME, name);
+            args.put(TIME, time);
+            args.put(PIC, pic);
+            args.put(PHONE, phone);
+            args.put(LATITUDE, latitude);
+            args.put(LONGITUDE, longitude);
+            args.put(LAC, lac);
+            args.put(CI, ci);
+
+            Message msg = new Message(args);
             String TAG = "SIGNING IN SUCCESS ", ERROR = "Signing in Error: ";
             JSONObject jsonObject = null;
             // jsonObject = processResults(TAG, POST(url,msg), ERROR);

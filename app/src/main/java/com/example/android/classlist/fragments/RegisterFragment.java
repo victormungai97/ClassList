@@ -12,11 +12,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.android.classlist.others.Extras;
+import com.example.android.classlist.others.Other.Extras;
 import com.example.android.classlist.activities.LoginActivity;
 import com.example.android.classlist.others.Message;
 import com.example.android.classlist.others.Permissions;
@@ -40,6 +42,10 @@ import com.example.android.classlist.database.SignInDbSchema.SignInTable;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+
+import static com.example.android.classlist.others.Other.Constants.*;
 import static com.example.android.classlist.others.PictureUtilities.galleryAddPic;
 import static com.example.android.classlist.others.PictureUtilities.recogniseFace;
 import static com.example.android.classlist.others.PictureUtilities.takePicture;
@@ -68,15 +74,13 @@ public class RegisterFragment extends Fragment implements Extras {
     FloatingActionButton fab;
     ImageButton mImageButton;
 
-    private static final int REQUEST_PHOTO = 14563;
-    private static final String TAG = "RegisterActivity";
-
     Bitmap photo;
     MyTextWatcher firstNameWatcher;
     MyTextWatcher regWatcher;
     MyTextWatcher lastNameWatcher;
-
     SQLiteDatabase mDatabase;
+    String dept;
+    String yr;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,7 +102,9 @@ public class RegisterFragment extends Fragment implements Extras {
         last_name = view.findViewById(R.id.lastName);
         admission_num = view.findViewById(R.id.admissionNum);
         department = view.findViewById(R.id.department);
+        department.setOnItemSelectedListener(new SelectItem("department"));
         years = view.findViewById(R.id.year);
+        years.setOnItemSelectedListener(new SelectItem("year"));
         progressBar = view.findViewById(R.id.simpleProgressBar);
         mSignInButton = view.findViewById(R.id.register_btn);
         mImageView = view.findViewById(R.id.register_photo);
@@ -200,12 +206,19 @@ public class RegisterFragment extends Fragment implements Extras {
                 String name = first_name.getText().toString() + " "
                         + last_name.getText().toString(),
                         reg_no = admission_num.getText().toString();
-                /* ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 photo.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
                 byte[] byteArrayImage = baos.toByteArray();
-                String image = Base64.encodeToString(byteArrayImage, Base64.DEFAULT); */
+                // convert byte array to byte string
+                String image = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
                 try {
-                    Message message = new Message((name), reg_no);
+                    HashMap<String, String> args = new HashMap<>();
+                    args.put(NAME, name);
+                    args.put(REG_NO, reg_no);
+                    args.put(PIC, image);
+                    args.put(DEPARTMENT, dept);
+                    args.put(YEAR, yr);
+                    Message message = new Message(args);
                     // message.setPic(image);
                     JSONObject response = Post.POST(URLS.student_register, message, getActivity());
                     if (response.getInt("status") == 0){
@@ -262,6 +275,8 @@ public class RegisterFragment extends Fragment implements Extras {
         outState.putString("LAST NAME",last_name.getText().toString());
         outState.putString("REG_NO",admission_num.getText().toString());
         outState.putString("URL",mServerUrl.getText().toString());
+        outState.putString("DEPARTMENT", dept);
+        outState.putString("YEAR", yr);
     }
 
     @Override
@@ -271,10 +286,13 @@ public class RegisterFragment extends Fragment implements Extras {
         // retrieve contents on screen before rotation
         if (savedInstanceState != null) {
             photo = savedInstanceState.getParcelable("photo");
+            mImageView.setImageBitmap(photo);
             first_name.setText(savedInstanceState.getString("FIRST NAME"));
             last_name.setText(savedInstanceState.getString("LAST NAME"));
             admission_num.setText(savedInstanceState.getString("REG_NO"));
             mServerUrl.setText(savedInstanceState.getString("URL"));
+            department.setPrompt(savedInstanceState.getCharSequence("DEPARTMENT"));
+            years.setPrompt(savedInstanceState.getCharSequence("YEAR"));
         }
     }
 
@@ -282,7 +300,7 @@ public class RegisterFragment extends Fragment implements Extras {
      * Method checks whether information has been entered before submission
      */
     public void updateSubmitButtonState() {
-        if ( /* photo != null && */ firstNameWatcher.nonEmpty() && regWatcher.nonEmpty() && lastNameWatcher.nonEmpty() ) {
+        if ( photo != null && firstNameWatcher.nonEmpty() && regWatcher.nonEmpty() && lastNameWatcher.nonEmpty() ) {
             mSignInButton.setEnabled(true);
         } else {
             mSignInButton.setEnabled(false);
@@ -294,5 +312,32 @@ public class RegisterFragment extends Fragment implements Extras {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    /**
+     * This class responds to changes in selected items for the two spinners
+     */
+    private class SelectItem implements AdapterView.OnItemSelectedListener{
+
+        String choice;
+
+        SelectItem(String choice) {
+            this.choice = choice;
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+            // on selecting a spinner item
+            if (choice.equals("year")){
+                // if year selected
+                yr = adapterView.getItemAtPosition(position).toString();
+            } else if (choice.equals("department")){
+                // if department chosen
+                dept = adapterView.getItemAtPosition(position).toString();
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {}
     }
 }

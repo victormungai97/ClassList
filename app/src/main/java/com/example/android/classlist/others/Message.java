@@ -1,5 +1,9 @@
 package com.example.android.classlist.others;
 
+import java.util.HashMap;
+
+import static com.example.android.classlist.others.Other.Constants.*;
+
 /**
  * Created by User on 4/22/2017.
  * Class to package information to be sent to server as message
@@ -18,30 +22,23 @@ public class Message {
     private String phone="";
     private String message="";
     private String choice="";
+    private String department="";
+    private String year="";
 
-    public Message() {
-    }
-
-    public Message(String name, String reg_no) {
-        this.name = name;
-        this.reg_no = reg_no;
-    }
-
-    public Message(String reg_no) {
-        this.reg_no = reg_no;
-    }
-
-    public Message(String name, String reg_no, String time, String pic, String latitude,
-                   String longitude, String lac, String ci, String phone) {
-        this.name = name;
-        this.reg_no = reg_no;
-        this.time = time;
-        this.pic = pic;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.lac = lac;
-        this.ci = ci;
-        this.phone = phone;
+    public Message(HashMap<String, String> args){
+        this.name = args.get(NAME);
+        this.reg_no = args.get(REG_NO);
+        this.department = args.get(DEPARTMENT);
+        this.pic = args.get(PIC);
+        this.time = args.get(TIME);
+        this.latitude = args.get(LATITUDE);
+        this.longitude = args.get(LONGITUDE);
+        this.lac = args.get(LAC);
+        this.ci = args.get(CI);
+        this.phone = args.get(PHONE);
+        this.message = args.get(SUGGESTION);
+        this.choice = args.get(CHOICE);
+        this.year = args.get(YEAR);
     }
 
     public String getName() {
@@ -52,83 +49,51 @@ public class Message {
         this.name = name;
     }
 
-    public String getReg_no() {
+    String getReg_no() {
         return reg_no;
     }
 
-    public void setReg_no(String reg_no) {
-        this.reg_no = reg_no;
-    }
-
-    public String getTime() {
+    String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getPic() {
+    String getPic() {
         return pic;
     }
 
-    public void setPic(String pic) {
-        this.pic = pic;
-    }
-
-    public String getLatitude() {
+    String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
+    String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLac() {
+    String getLac() {
         return lac;
     }
 
-    public void setLac(String lac) {
-        this.lac = lac;
-    }
-
-    public String getCi() {
+    String getCi() {
         return ci;
     }
 
-    public void setCi(String ci) {
-        this.ci = ci;
-    }
-
-    public String getPhone() {
+    String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getMessage() {
+    String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getChoice() {
+    String getChoice() {
         return choice;
     }
 
-    public void setChoice(String choice) {
-        this.choice = choice;
+    String getDepartment() {
+        return department;
+    }
+
+    String getYear(){
+        return year;
     }
 }

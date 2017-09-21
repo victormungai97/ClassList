@@ -34,7 +34,7 @@ public class PictureUtilities {
     * Scales image file, calculates rate of scaling down to given area and then rereads the
     * file to create a scaled-down Bitmap object
      */
-    static Bitmap getScaledBitmap(String path, int destWidth, int destHeight){
+    private static Bitmap getScaledBitmap(String path, int destWidth, int destHeight){
         // Read in dimensions of the image on the disk
         BitmapFactory.Options options = new BitmapFactory.Options();
 
