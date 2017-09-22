@@ -256,7 +256,7 @@ public class MainFragment extends Fragment {
                         String url = mServerUrl.getText().toString();
 
                         new HttpsRequest().execute(name, regno, time, image, latitude, longitude,
-                                altitude, lac, ci, url, phone);
+                                lac, ci, url, phone, altitude);
                         if (status == 0) {
                             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         } else {
@@ -391,6 +391,7 @@ public class MainFragment extends Fragment {
             String ci = jsonObjects[7];
             String url = jsonObjects[8];
             String phone = jsonObjects[9];
+            String altitude = jsonObjects[10];
 
             HashMap<String, String> args = new HashMap<>();
             args.put(REG_NO, reg_no);
@@ -400,6 +401,7 @@ public class MainFragment extends Fragment {
             args.put(PHONE, phone);
             args.put(LATITUDE, latitude);
             args.put(LONGITUDE, longitude);
+            args.put(ALTITUDE, altitude);
             args.put(LAC, lac);
             args.put(CI, ci);
 

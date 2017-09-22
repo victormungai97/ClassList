@@ -37,6 +37,7 @@ public class Other {
         public static final String TIME = "time";
         public static final String LATITUDE = "latitude";
         public static final String LONGITUDE = "longitude";
+        public static final String ALTITUDE = "altitude";
         public static final String LAC = "lac";
         public static final String CI = "ci";
         public static final String PHONE = "phone";

@@ -62,6 +62,7 @@ public class Post {
             jsonObject.accumulate(PIC, message.getPic());
             jsonObject.accumulate(LATITUDE,message.getLatitude());
             jsonObject.accumulate(LONGITUDE, message.getLongitude());
+            jsonObject.accumulate(ALTITUDE, message.getAltitude());
             jsonObject.accumulate(LAC, message.getLac());
             jsonObject.accumulate(CI, message.getCi());
             jsonObject.accumulate(PHONE, message.getPhone());

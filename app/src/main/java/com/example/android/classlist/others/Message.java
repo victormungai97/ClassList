@@ -17,6 +17,7 @@ public class Message {
     private String pic="";
     private String latitude="";
     private String longitude="";
+    private String altitude="";
     private String lac="";
     private String ci="";
     private String phone="";
@@ -33,6 +34,7 @@ public class Message {
         this.time = args.get(TIME);
         this.latitude = args.get(LATITUDE);
         this.longitude = args.get(LONGITUDE);
+        this.altitude = args.get(ALTITUDE);
         this.lac = args.get(LAC);
         this.ci = args.get(CI);
         this.phone = args.get(PHONE);
@@ -95,5 +97,9 @@ public class Message {
 
     String getYear(){
         return year;
+    }
+
+    String getAltitude() {
+        return altitude;
     }
 }
