@@ -238,6 +238,7 @@ public class MainFragment extends Fragment {
                         String time = mLocatingClass.getTime();
                         String latitude = String.valueOf(mLocatingClass.getLatitude());
                         String longitude = String.valueOf(mLocatingClass.getLongitude());
+                        String altitude = String.valueOf(mLocatingClass.getAltitude());
                         JSONObject jsonObject = (JSONObject) LocatingClass.getCellInfo(getActivity()).get("primary");
                         String lac = String.valueOf(jsonObject.getInt("LAC")), ci = String.valueOf(jsonObject.getInt("CID"));
 
@@ -254,7 +255,8 @@ public class MainFragment extends Fragment {
                         String image = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
                         String url = mServerUrl.getText().toString();
 
-                        new HttpsRequest().execute(name, regno, time, image, latitude, longitude, lac, ci, url, phone);
+                        new HttpsRequest().execute(name, regno, time, image, latitude, longitude,
+                                altitude, lac, ci, url, phone);
                         if (status == 0) {
                             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         } else {

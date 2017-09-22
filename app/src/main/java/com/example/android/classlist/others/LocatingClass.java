@@ -148,16 +148,16 @@ public class LocatingClass {
         return df.format(calendar.getTime());
     }
 
-    /**
+    /*
      * Checks whether mobile network is connected
      * @param context Context of app
      * @return status of connection
      */
-    private static boolean isConnectedMobile(Context context) {
+    /*private static boolean isConnectedMobile(Context context) {
 //        return ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE))
 //                .getNetworkType() != TelephonyManager.NETWORK_TYPE_UNKNOWN;
         return true;
-    }
+    }*/
 
     /**
      * Method to get connection information of mobile network
@@ -166,9 +166,9 @@ public class LocatingClass {
      */
     public static JSONObject getCellInfo(Context context) {
         JSONObject cellList = new JSONObject();
-        if (!isConnectedMobile(context))
+        /*if (!isConnectedMobile(context))
             return cellList;
-
+        */
         TelephonyManager tel = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         JSONObject primaryCellInfo = new JSONObject();
         JSONArray secondaryCellInfos = new JSONArray();
