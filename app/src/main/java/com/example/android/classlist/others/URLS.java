@@ -15,4 +15,6 @@ public class URLS {
     public static final String student_register = student_root.concat("phone/");
     // departments URL
     public static final String departments = student_root.concat("get_departments/");
+    // login URL
+    public static final String student_login = student_root.concat("login2/");
 }

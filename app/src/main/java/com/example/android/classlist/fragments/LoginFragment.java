@@ -1,12 +1,10 @@
 package com.example.android.classlist.fragments;
 
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,10 +16,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +36,8 @@ import com.example.android.classlist.database.SignInDbSchema.SignInTable;
 import com.example.android.classlist.others.Other.Extras;
 import com.example.android.classlist.others.Message;
 import com.example.android.classlist.others.Permissions;
+import com.example.android.classlist.others.Post;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -46,7 +46,7 @@ import java.util.HashMap;
 
 import static com.example.android.classlist.others.Other.Constants.REG_NO;
 import static com.example.android.classlist.others.Post.getContentValues;
-// import static com.example.android.classlist.others.Post.processResults;
+import static com.example.android.classlist.others.URLS.student_login;
 
 /**
  * Fragment hosted Login Activity. Will provide UI for user to login
@@ -63,11 +63,7 @@ public class LoginFragment extends Fragment implements Extras {
     EditText mServerUrl;
     File directory;
     SQLiteDatabase mDatabase;
-
-    int status = 0;
-    String message;
-
-    private static final String URL_TO_SEND_DATA = "http://192.168.0.11:5000/getstudent/";
+    ProgressBar progressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +78,7 @@ public class LoginFragment extends Fragment implements Extras {
                     + "ClassList" + File.separator + "Pictures");
             // if directory does not exist
             if (!directory.isDirectory()) {
+                //noinspection ResultOfMethodCallIgnored
                 directory.mkdirs(); // create directory and any immediate required directories
             }
             Log.e("Directory:",""+directory.getAbsolutePath());
@@ -106,6 +103,7 @@ public class LoginFragment extends Fragment implements Extras {
         signInBtn = view.findViewById(R.id.sign_in_btn);
         mFloatingActionButton = view.findViewById(R.id.fab_signin);
         mServerUrl = view.findViewById(R.id.ur_name);
+        progressBar = view.findViewById(R.id.simpleProgressBar);
         mDatabase = new SignBaseHelper(getActivity()).getWritableDatabase();
 
         adm_num = view.findViewById(R.id.admissionNum2);
@@ -128,19 +126,33 @@ public class LoginFragment extends Fragment implements Extras {
         signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // make the progress bar visible
+                progressBar.setVisibility(View.VISIBLE);
+                // make other elements unusable
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 String reg_no = adm_num.getText().toString();
-                String url = mServerUrl.getText().toString();
                 try {
-                    new SignIn().execute(reg_no,url);
-                    if (status == 0) {
-                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                    HashMap<String, Object> args = new HashMap<>();
+                    args.put(REG_NO, reg_no);
+                    Message message = new Message(args);
+                    JSONObject response = Post.POST(student_login, message, getActivity());
+                    if (response.getInt("status") == 0){
+                        ContentValues values = getContentValues(reg_no,response.getString("message"));
+                        mDatabase.insert(SignInTable.NAME, null, values);
+                        moveToScreen(response.getString("message"), reg_no, directory.getAbsolutePath());
                     } else {
-                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "Error: " + response.getString("message"),
+                                Toast.LENGTH_SHORT ).show();
                     }
                 } catch (Exception ex){
                     Log.e(LoginActivity.class.toString(), "Error connecting to main activity.\n" +
                             ex.getMessage());
                 }
+                // make progress bar invisible
+                progressBar.setVisibility(View.INVISIBLE);
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
 
@@ -167,7 +179,7 @@ public class LoginFragment extends Fragment implements Extras {
         };
 
         adm_num.addTextChangedListener(regWatcher);
-        mServerUrl.setText(URL_TO_SEND_DATA);
+        mServerUrl.setText(student_login);
 
         return view;
     }
@@ -198,6 +210,7 @@ public class LoginFragment extends Fragment implements Extras {
         SignInCursorWrapper cursor = queryRegno(null, null);
 
         // get received reg. nos. and add to array list
+        //noinspection TryFinallyCanBeTryWithResources
         try {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -254,54 +267,6 @@ public class LoginFragment extends Fragment implements Extras {
             signInBtn.setEnabled(true);
         } else {
             signInBtn.setEnabled(false);
-        }
-    }
-
-    private class SignIn extends AsyncTask<String, Void, Void> {
-
-        ProgressDialog progressDialog = new ProgressDialog(getActivity());
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog.setMessage("Please wait");
-            progressDialog.setIndeterminate(true);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            String reg_no = strings[0];
-            String url = strings[1];
-            HashMap<String, String> args = new HashMap<>();
-            args.put(REG_NO, reg_no);
-
-            Message msg = new Message(args);
-
-            String TAG = "RETRIEVAL SUCCESS ", ERROR = "Retrieval Error: ";
-            JSONObject jsonObject = null;
-            // jsonObject = processResults(TAG, POST(url,msg), ERROR);
-            try {
-                status = jsonObject.getInt("STATUS");
-                message = jsonObject.getString("MESSAGE");
-            } catch (JSONException ex){
-                Log.e("JSON error", "Error sending data "+ex.getMessage());
-            }
-
-            if (status == 0){
-                moveToScreen(message, reg_no,directory.getAbsolutePath());
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (progressDialog.isShowing()){
-                progressDialog.cancel();
-            }
         }
     }
 }

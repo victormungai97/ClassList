@@ -34,6 +34,7 @@ public class Other {
         public static final String NAME = "name";
         public static final String REG_NO = "regno";
         public static final String PIC = "picture";
+        public static final String IMAGES = "images";
         public static final String TIME = "time";
         public static final String LATITUDE = "latitude";
         public static final String LONGITUDE = "longitude";

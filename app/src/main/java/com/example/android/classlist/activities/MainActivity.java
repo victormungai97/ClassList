@@ -37,4 +37,10 @@ public class MainActivity extends MainFragmentActivity {
         String dir = getIntent().getStringExtra(EXTRA_USER_DIR);
         return MainFragment.newInstance(name,reg_num,dir);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

@@ -43,6 +43,7 @@ import com.example.android.classlist.database.SignInDbSchema.SignInTable;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.example.android.classlist.others.Other.Constants.*;
@@ -201,6 +202,7 @@ public class RegisterFragment extends Fragment implements Extras {
             public void onClick(View view) {
                 // make the progress bar visible
                 progressBar.setVisibility(View.VISIBLE);
+                // make other elements unusable
                 getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 String name = first_name.getText().toString() + " "
@@ -211,15 +213,16 @@ public class RegisterFragment extends Fragment implements Extras {
                 byte[] byteArrayImage = baos.toByteArray();
                 // convert byte array to byte string
                 String image = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                ArrayList <String> imagesList = new ArrayList<>();
+                imagesList.add(image);
                 try {
-                    HashMap<String, String> args = new HashMap<>();
+                    HashMap<String, Object> args = new HashMap<>();
                     args.put(NAME, name);
                     args.put(REG_NO, reg_no);
-                    args.put(PIC, image);
+                    args.put(IMAGES, imagesList);
                     args.put(DEPARTMENT, dept);
                     args.put(YEAR, yr);
                     Message message = new Message(args);
-                    // message.setPic(image);
                     JSONObject response = Post.POST(URLS.student_register, message, getActivity());
                     if (response.getInt("status") == 0){
                         ContentValues values = getContentValues(reg_no,name);
@@ -231,7 +234,7 @@ public class RegisterFragment extends Fragment implements Extras {
                                 Toast.LENGTH_SHORT ).show();
                     }
                 } catch (Exception ex){
-                    Log.e(RegisterActivity.class.toString(), "Error connecting to main activity\n"+
+                    Log.e(RegisterActivity.class.toString(), "Error connecting to login activity\n"+
                             ex.getMessage());
                 }
                 // make progress bar invisible

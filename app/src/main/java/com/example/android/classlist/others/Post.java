@@ -59,6 +59,7 @@ public class Post {
             jsonObject.accumulate(DEPARTMENT, message.getDepartment());
             jsonObject.accumulate(YEAR, message.getYear());
             jsonObject.accumulate(TIME, message.getTime());
+            jsonObject.accumulate(IMAGES, message.getImages());
             jsonObject.accumulate(PIC, message.getPic());
             jsonObject.accumulate(LATITUDE,message.getLatitude());
             jsonObject.accumulate(LONGITUDE, message.getLongitude());

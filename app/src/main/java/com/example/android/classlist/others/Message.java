@@ -1,6 +1,8 @@
 package com.example.android.classlist.others;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.example.android.classlist.others.Other.Constants.*;
 
@@ -14,6 +16,7 @@ public class Message {
     private String name="";
     private String reg_no="";
     private String time="";
+    private ArrayList images = new ArrayList<>();
     private String pic="";
     private String latitude="";
     private String longitude="";
@@ -26,21 +29,22 @@ public class Message {
     private String department="";
     private String year="";
 
-    public Message(HashMap<String, String> args){
-        this.name = args.get(NAME);
-        this.reg_no = args.get(REG_NO);
-        this.department = args.get(DEPARTMENT);
-        this.pic = args.get(PIC);
-        this.time = args.get(TIME);
-        this.latitude = args.get(LATITUDE);
-        this.longitude = args.get(LONGITUDE);
-        this.altitude = args.get(ALTITUDE);
-        this.lac = args.get(LAC);
-        this.ci = args.get(CI);
-        this.phone = args.get(PHONE);
-        this.message = args.get(SUGGESTION);
-        this.choice = args.get(CHOICE);
-        this.year = args.get(YEAR);
+    public Message(HashMap args){
+        this.name = (String) args.get(NAME);
+        this.reg_no = (String) args.get(REG_NO);
+        this.department = (String) args.get(DEPARTMENT);
+        this.pic = (String) args.get(PIC);
+        this.time = (String) args.get(TIME);
+        this.latitude = (String) args.get(LATITUDE);
+        this.longitude = (String) args.get(LONGITUDE);
+        this.altitude = (String) args.get(ALTITUDE);
+        this.lac = (String) args.get(LAC);
+        this.ci = (String) args.get(CI);
+        this.phone =(String) args.get(PHONE);
+        this.message = (String) args.get(SUGGESTION);
+        this.choice = (String) args.get(CHOICE);
+        this.year = (String) args.get(YEAR);
+        this.images = (ArrayList) args.get(IMAGES);
     }
 
     public String getName() {
@@ -101,5 +105,9 @@ public class Message {
 
     String getAltitude() {
         return altitude;
+    }
+
+    ArrayList getImages() {
+        return images;
     }
 }
