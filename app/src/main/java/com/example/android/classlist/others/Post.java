@@ -59,7 +59,8 @@ public class Post {
             jsonObject.accumulate(DEPARTMENT, message.getDepartment());
             jsonObject.accumulate(YEAR, message.getYear());
             jsonObject.accumulate(TIME, message.getTime());
-            jsonObject.accumulate(IMAGES, message.getImages());
+            JSONArray list = new JSONArray(message.getImages());
+            jsonObject.accumulate(IMAGES, list);
             jsonObject.accumulate(PIC, message.getPic());
             jsonObject.accumulate(LATITUDE,message.getLatitude());
             jsonObject.accumulate(LONGITUDE, message.getLongitude());
@@ -70,7 +71,8 @@ public class Post {
             jsonObject.accumulate(SUGGESTION,message.getMessage());
             jsonObject.accumulate(CHOICE, message.getChoice());
 
-            VolleyHelperClass.getVolleyHelperClass(activity.getApplicationContext()).addToRequestQueue(new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+            VolleyHelperClass.getVolleyHelperClass(activity.getApplicationContext()).
+                    addToRequestQueue(new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -98,9 +100,11 @@ public class Post {
         return sJSONObject;
     }
 
+    /*
     public static String POST(String url, Message message){
         return POST(url, message, null).toString();
     }
+    */
 
     /**
      * Method that maps student's details to their respective columns

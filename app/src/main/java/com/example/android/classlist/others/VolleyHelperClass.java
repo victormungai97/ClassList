@@ -12,6 +12,7 @@ import com.android.volley.toolbox.Volley;
 /**
  * Created by Victor Mungai on 9/7/2017.
  * Helper class to carry out android volley requests
+ * This is a singleton with a private constructor and a public get method to access it
  */
 
 public class VolleyHelperClass extends Application {

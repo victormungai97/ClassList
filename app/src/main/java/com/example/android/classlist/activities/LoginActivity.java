@@ -9,4 +9,10 @@ public class LoginActivity extends MainFragmentActivity {
     protected Fragment createFragment() {
         return new LoginFragment();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
