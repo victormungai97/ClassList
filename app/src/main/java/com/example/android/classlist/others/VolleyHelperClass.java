@@ -9,6 +9,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import static com.example.android.classlist.others.Other.Constants.TAG;
+
 /**
  * Created by Victor Mungai on 9/7/2017.
  * Helper class to carry out android volley requests
@@ -21,7 +23,6 @@ public class VolleyHelperClass extends Application {
     private static VolleyHelperClass sVolleyHelperClass;
     private static RequestQueue sRequestQueue;
     private Context mContext;
-    private static final String TAG = "VOLLEY";
 
     private VolleyHelperClass(Context context) {
         mContext = context;
