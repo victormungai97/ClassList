@@ -134,15 +134,11 @@
             android:layout_margin="20dp"
             android:weightSum="1">
 
-            <ImageView
-                android:id="@+id/register_photo"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_register_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@android:color/black"
-                android:contentDescription="@string/content_view"
-                android:cropToPadding="true"
-                android:scaleType="centerInside"/>
+                android:scrollbars="vertical" />
 
         </LinearLayout>
 

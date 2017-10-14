@@ -2,7 +2,6 @@ package com.example.android.classlist.others;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static com.example.android.classlist.others.Other.Constants.*;
 

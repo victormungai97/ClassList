@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Picture, icon and text should appear if room -->
+    <item
+        android:id="@+id/menu_item_new_picture"
+        android:icon="@drawable/ic_menu_picture"
+        android:title="@string/take_picture"
+        app:showAsAction="ifRoom|withText"/>
+
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
+</menu>

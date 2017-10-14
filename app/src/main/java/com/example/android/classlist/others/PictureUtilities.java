@@ -3,6 +3,7 @@ package com.example.android.classlist.others;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,7 +14,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -25,9 +28,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static com.example.android.classlist.others.Other.Constants.*;
+
 public class PictureUtilities {
 
-    private static final int REQUEST_PHOTO = 1;
     private static String mCurrentPhotoPath;
 
     /*
@@ -72,10 +76,11 @@ public class PictureUtilities {
     /**
      * Method invokes intent to take picture
      */
-    public static Uri takePicture(Fragment activity, String TAG){
+    public static Uri takePicture(Fragment activity, String TAG, String dir){
 
         Uri imageForUpload = null;
         Context context = activity.getActivity().getApplicationContext();
+        PackageManager packageManager = context.getPackageManager();
 
         // call phone's camera
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -85,7 +90,7 @@ public class PictureUtilities {
             File photoFile;
 
             try{
-                photoFile = getPhotoFile(context, TAG);
+                photoFile = getPhotoFile(context, TAG, dir);
             } catch (Exception ex){
                 Log.e("Image error","Error saving image");
                 return null;
@@ -96,6 +101,9 @@ public class PictureUtilities {
                 Uri photoURI = FileProvider.getUriForFile(context,"com.example.android.fileprovider",
                         photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT,photoURI);
+                // call front camera if present
+                if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT))
+                    intent.putExtra(CAMERA_FACING, 1);
                 imageForUpload = Uri.fromFile(photoFile);
                 activity.startActivityForResult(intent, REQUEST_PHOTO);
                 // photoFile.renameTo(new File(directory, getPhotoFilename()));
@@ -120,9 +128,13 @@ public class PictureUtilities {
      * Method returns the file containing the photo
      * @return photo file
      */
-    private static File getPhotoFile(Context context, String TAG) {
+    private static File getPhotoFile(Context context, String TAG, String dir) {
         File externalFilesDir;
-        externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (!dir.equals("")){
+         externalFilesDir = new File(dir);
+        } else {
+            externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        }
 
         // Save a file: path for use with ACTION_VIEW intents
         try {
@@ -166,18 +178,18 @@ public class PictureUtilities {
             int faces = faceDet.findFaces(photo.copy(Bitmap.Config.RGB_565, false), new FaceDetector.Face[2]);
             if (faces == 0) {
                 Toast.makeText(context, "No face Detected.", Toast.LENGTH_SHORT).show();
-                imageView.setImageResource(android.R.drawable.ic_menu_camera);
+                imageView.setImageDrawable(ContextCompat.getDrawable(activity, android.R.drawable.ic_menu_camera));
                 photo = null;
             } else if (faces > 1) {
                 Toast.makeText(context, "Detected more than one face.", Toast.LENGTH_SHORT).show();
-                imageView.setImageResource(android.R.drawable.ic_menu_camera);
+                imageView.setImageDrawable(ContextCompat.getDrawable(activity, android.R.drawable.ic_menu_camera));
                 photo = null;
             }
             BitmapDrawable ob = new BitmapDrawable(activity.getResources(),photo);
             imageView.setImageDrawable(ob);
             // updateSubmitButtonState();
         } else {
-            imageView.setImageResource(android.R.drawable.ic_menu_camera);
+            imageView.setImageDrawable(ContextCompat.getDrawable(activity, android.R.drawable.ic_menu_camera));
             Toast.makeText(context,"Error1 while capturing image",Toast.LENGTH_SHORT).show();
         }
 
@@ -208,8 +220,8 @@ public class PictureUtilities {
             Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null);
             assert cursor != null;
             cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            String result = cursor.getString(idx);
+            int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            String result = cursor.getString(index);
             cursor.close();
             return result;
         } catch (Exception ex){
@@ -217,5 +229,21 @@ public class PictureUtilities {
         }
 
         return "";
+    }
+
+    /**
+     * Function to compress and convert bitmap to string for transmission.
+     * It uses the Base64 encoding library
+     * @param photo Bitmap to be converted
+     * @return String conversion of bitmap
+     */
+    public static String compressImage(Bitmap photo){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if (photo == null)
+            return "";
+        photo.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+        byte[] byteArrayImage = baos.toByteArray();
+        // convert byte array to byte string
+        return Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
     }
 }

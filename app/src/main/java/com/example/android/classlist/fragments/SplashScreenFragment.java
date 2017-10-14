@@ -37,10 +37,7 @@ public class SplashScreenFragment extends Fragment {
                 // Method will run once splash time is over
                 // Start login activity
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
-                // flags to remove current screen after moving to next activity
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-
                 getActivity().finish(); // close this activity
             }
         }, SPLASH_TIME);

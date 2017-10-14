@@ -138,8 +138,6 @@ public class LoginFragment extends Fragment implements Extras {
                     Message message = new Message(args);
                     JSONObject response = Post.POST(student_login, message, getActivity());
                     if (response.getInt("status") == 0){
-                        ContentValues values = getContentValues(reg_no,response.getString("message"));
-                        mDatabase.insert(SignInTable.NAME, null, values);
                         moveToScreen(response.getString("message"), reg_no, directory.getAbsolutePath());
                     } else {
                         Toast.makeText(getActivity().getApplicationContext(),

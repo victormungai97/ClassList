@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,11 +34,11 @@ import com.google.android.gms.location.LocationServices;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.example.android.classlist.others.Other.Constants.*;
+import static com.example.android.classlist.others.PictureUtilities.compressImage;
 import static com.example.android.classlist.others.PictureUtilities.galleryAddPic;
 import static com.example.android.classlist.others.PictureUtilities.getImageUri;
 import static com.example.android.classlist.others.PictureUtilities.getRealPathFromURI;
@@ -195,13 +194,13 @@ public class MainFragment extends Fragment {
         }
 
         turnGPSOn();
-        imageForUpload = takePicture(MainFragment.this, TAG);
+        imageForUpload = takePicture(MainFragment.this, TAG, directory);
         galleryAddPic(getActivity());
 
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                imageForUpload = takePicture(MainFragment.this, TAG);
+                imageForUpload = takePicture(MainFragment.this, TAG, directory);
                 galleryAddPic(getActivity());
             }
         });
@@ -248,11 +247,7 @@ public class MainFragment extends Fragment {
 
                         /* compress image */
                         //bm is the bitmap object
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        //photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-                        photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                        byte[] byteArrayImage = baos.toByteArray();
-                        String image = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                        String image = compressImage(photo);
                         String url = mServerUrl.getText().toString();
 
                         new HttpsRequest().execute(name, regno, time, image, latitude, longitude,
