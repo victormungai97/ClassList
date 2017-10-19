@@ -44,6 +44,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.example.android.classlist.others.FileUtilities.createSystemDirs;
 import static com.example.android.classlist.others.Other.Constants.REG_NO;
 import static com.example.android.classlist.others.Post.getContentValues;
 import static com.example.android.classlist.others.URLS.student_login;
@@ -74,14 +75,9 @@ public class LoginFragment extends Fragment implements Extras {
             // if no external memory, log error
             Log.e("FOLDER CREATION ERROR","No SDCARD");
         } else {
-            directory = new File(Environment.getExternalStorageDirectory() + File.separator
-                    + "ClassList" + File.separator + "Pictures");
-            // if directory does not exist
-            if (!directory.isDirectory()) {
-                //noinspection ResultOfMethodCallIgnored
-                directory.mkdirs(); // create directory and any immediate required directories
-            }
-            Log.e("Directory:",""+directory.getAbsolutePath());
+            // create directory for saving images
+            directory = createSystemDirs(getActivity()).get(0);
+            Log.e("Directory",""+directory.getAbsolutePath());
         }
 
         /*

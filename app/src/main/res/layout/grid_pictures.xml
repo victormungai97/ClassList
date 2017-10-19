@@ -12,7 +12,7 @@
     android:id="@+id/list_item_image_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:src="@android:drawable/ic_menu_camera"
+    android:src="@mipmap/ic_picture"
     android:contentDescription="@string/take_picture"
     tools:text="Take Picture"/>
 </LinearLayout>

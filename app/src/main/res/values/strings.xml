@@ -8,6 +8,7 @@
     <string name="last_name">Last Name</string>
     <string name="submit_button">Submit</string>
     <string name="url_name">Url Address</string>
+    <string name="email">Email Address</string>
     <string name="register_btn">REGISTER</string>
     <string name="sign_in">SIGN IN</string>
     <string name="link_to_login">Not registered? Register here</string>
@@ -27,6 +28,9 @@
         <item>3</item>
         <item>4</item>
         <item>5</item>
+    </string-array>
+    <string-array name="Departments_of_study">
+        <item>None</item>
     </string-array>
     <string name="dept_prompt">Choose programme</string>
     <string name="suggestion_text">Enter your suggestion</string>

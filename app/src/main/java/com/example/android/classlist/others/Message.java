@@ -1,5 +1,6 @@
 package com.example.android.classlist.others;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,8 +15,8 @@ public class Message {
 
     private String name="";
     private String reg_no="";
+    private String email="";
     private String time="";
-    private ArrayList images = new ArrayList<>();
     private String pic="";
     private String latitude="";
     private String longitude="";
@@ -27,10 +28,12 @@ public class Message {
     private String choice="";
     private String department="";
     private String year="";
+    private File file;
 
     public Message(HashMap args){
         this.name = (String) args.get(NAME);
         this.reg_no = (String) args.get(REG_NO);
+        this.email = (String) args.get(EMAIL_ADDRESS);
         this.department = (String) args.get(DEPARTMENT);
         this.pic = (String) args.get(PIC);
         this.time = (String) args.get(TIME);
@@ -43,7 +46,7 @@ public class Message {
         this.message = (String) args.get(SUGGESTION);
         this.choice = (String) args.get(CHOICE);
         this.year = (String) args.get(YEAR);
-        this.images = (ArrayList) args.get(IMAGES);
+        this.file = (File) args.get(FILE);
     }
 
     public String getName() {
@@ -106,7 +109,11 @@ public class Message {
         return altitude;
     }
 
-    ArrayList getImages() {
-        return images;
+    File getFile() {
+        return file;
+    }
+
+    String getEmail() {
+        return email;
     }
 }

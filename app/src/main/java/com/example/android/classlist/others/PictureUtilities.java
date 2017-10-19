@@ -11,15 +11,15 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.FaceDetector;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.example.android.classlist.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -33,6 +33,7 @@ import static com.example.android.classlist.others.Other.Constants.*;
 public class PictureUtilities {
 
     private static String mCurrentPhotoPath;
+
 
     /*
     * Scales image file, calculates rate of scaling down to given area and then rereads the
@@ -90,7 +91,7 @@ public class PictureUtilities {
             File photoFile;
 
             try{
-                photoFile = getPhotoFile(context, TAG, dir);
+                photoFile = getPhotoFile(TAG, dir);
             } catch (Exception ex){
                 Log.e("Image error","Error saving image");
                 return null;
@@ -98,13 +99,11 @@ public class PictureUtilities {
 
             // continue only if File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(context,"com.example.android.fileprovider",
-                        photoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT,photoURI);
+                imageForUpload = Uri.fromFile(photoFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT,imageForUpload);
                 // call front camera if present
                 if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT))
                     intent.putExtra(CAMERA_FACING, 1);
-                imageForUpload = Uri.fromFile(photoFile);
                 activity.startActivityForResult(intent, REQUEST_PHOTO);
                 // photoFile.renameTo(new File(directory, getPhotoFilename()));
             }
@@ -128,17 +127,13 @@ public class PictureUtilities {
      * Method returns the file containing the photo
      * @return photo file
      */
-    private static File getPhotoFile(Context context, String TAG, String dir) {
+    private static File getPhotoFile(String TAG, String dir) {
         File externalFilesDir;
-        if (!dir.equals("")){
-         externalFilesDir = new File(dir);
-        } else {
-            externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        }
+        assert dir != null;
+        externalFilesDir = new File(dir);
 
         // Save a file: path for use with ACTION_VIEW intents
         try {
-            assert externalFilesDir != null;
             mCurrentPhotoPath = externalFilesDir.getAbsolutePath();
         } catch (NullPointerException ex){
             Log.e(TAG, ex.getMessage());
@@ -148,14 +143,22 @@ public class PictureUtilities {
     }
 
     /**
-     * Method return file name using the time that it was taken
+     * Method returns current time in specified format
      */
-    private static String getPhotoFilename() {
+    public static String getFileName(){
         // get current time and set as file name
         DateFormat df = new SimpleDateFormat("ddMMyyyy_hhmmssSSS", Locale.ROOT);
         Calendar calendar = Calendar.getInstance();
-        String time = df.format(calendar.getTime());
-        return "IMG_" + time + ".jpg";
+        return df.format(calendar.getTime());
+    }
+
+    /**
+     * Method returns file name by combining time passes with the JPG extension
+     * @return file name of the image file
+     */
+    private static String getPhotoFilename() {
+
+        return "IMG_" + getFileName() + ".jpg";
     }
 
     /**
@@ -189,7 +192,7 @@ public class PictureUtilities {
             imageView.setImageDrawable(ob);
             // updateSubmitButtonState();
         } else {
-            imageView.setImageDrawable(ContextCompat.getDrawable(activity, android.R.drawable.ic_menu_camera));
+            imageView.setImageDrawable(ContextCompat.getDrawable(activity, R.mipmap.ic_picture));
             Toast.makeText(context,"Error1 while capturing image",Toast.LENGTH_SHORT).show();
         }
 
@@ -205,12 +208,13 @@ public class PictureUtilities {
     public static Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(),
+                inImage, "Title", null);
         return Uri.parse(path);
     }
 
     /**
-     * Method that retrieves a picture file path from it's URI
+     * Method that retrieves a picture file path from its URI
      * @param uri URI of the image
      * @param activity Activity hosting the picture
      * @return File path of picture

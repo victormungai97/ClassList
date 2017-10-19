@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -23,7 +21,6 @@ import android.widget.Toast;
 import com.example.android.classlist.R;
 import com.example.android.classlist.activities.RegisterActivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.example.android.classlist.others.Other.Constants.*;
@@ -44,7 +41,7 @@ public class PictureFragment extends Fragment implements View.OnClickListener {
     static Bitmap photo;
     static int position;
     String dir;
-    static ArrayList<Parcelable> images;
+    static ArrayList<Uri> images;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,22 +71,21 @@ public class PictureFragment extends Fragment implements View.OnClickListener {
         PictureFragment.imageForUpload = imageForUpload;
     }
 
-    public static ArrayList<Parcelable> getImages() {
+    public static ArrayList<Uri> getImages() {
         return images;
     }
 
     /**
      * Accepts values sent to hosting activity, packs it in a bundle and returns a fragment
      * @param dir Directory to save picture
-     * @param position Position of the view in the adapter
+     * @param position Position of passed image view and corresponding image uri in adapter
      * @return instance of the fragment
      */
-    public static PictureFragment newInstance(String dir, int position/* , Uri uri */, ArrayList<Uri> images) {
+    public static PictureFragment newInstance(String dir, ArrayList<Uri> images, int position) {
         Bundle args = new Bundle();
         args.putString(ARG_USER_DIR, dir);
         args.putInt(ARG_USER_POSITION, position);
         args.putParcelableArrayList(ARG_USER_PICTURE, images);
-        // args.putParcelable(ARG_USER_PICTURE, uri);
         PictureFragment fragment = new PictureFragment();
         fragment.setArguments(args);
         return fragment;
@@ -105,21 +101,11 @@ public class PictureFragment extends Fragment implements View.OnClickListener {
         imageView = view.findViewById(R.id.preview_image);
         imageView.setOnClickListener(this);
         // get passed values for position and directory
-        position = getArguments().getInt(ARG_USER_POSITION);
         dir = getArguments().getString(ARG_USER_DIR);
         images = getArguments().getParcelableArrayList(ARG_USER_PICTURE);
-        /* imageForUpload = getArguments().getParcelable(ARG_USER_PICTURE);
-        if (imageForUpload == null) photo = null;
-        else {
-            try {
-                photo = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),
-                        imageForUpload);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } */
+        position = getArguments().getInt(ARG_USER_POSITION);
         if (photo == null){
-            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.list));
+            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_picture));
         }
 
         return view;
@@ -182,12 +168,13 @@ public class PictureFragment extends Fragment implements View.OnClickListener {
                     // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
                     if (photo!= null) {
                         imageForUpload = getImageUri(getContext(), photo);
+                        // ADD OR REPLACE RETRIEVED URI IN LIST
                         if (images.size() == 10) {
-                            images.remove(position);
-                            images.add(position, imageForUpload);
+                            images.remove(getPosition());
+                            images.add(getPosition(), imageForUpload);
                         }
                         else images.add(imageForUpload);
-                        Intent intent = RegisterActivity.newIntent(getActivity(), getImageForUpload(), getPosition(), getImages());
+                        Intent intent = RegisterActivity.newIntent(getActivity(), getImages());
                         startActivity(intent);
                     }
                     else imageForUpload = null;

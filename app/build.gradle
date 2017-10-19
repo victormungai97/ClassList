@@ -26,6 +26,13 @@ android {
     }
 }
 
+repositories{
+    maven{
+        // link where nbsp lib is located
+        url "http://dl.bintray.com/lukaville/maven"
+    }
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -44,4 +51,8 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.squareup.picasso:picasso:2.5.2'
     testCompile 'junit:junit:4.12'
+    // ok http library is used for network request
+    compile 'com.squareup.okhttp3:okhttp:3.7.0'
+    // sets up spinner hint
+    compile 'me.srodrigo:androidhintspinner:1.0.0'
 }

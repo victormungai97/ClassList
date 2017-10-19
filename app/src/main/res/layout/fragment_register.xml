@@ -44,7 +44,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_margin="10dp">
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp">
 
         <EditText
             android:id="@+id/firstName"
@@ -72,6 +75,20 @@
     </LinearLayout>
 
     <EditText
+        android:id="@+id/emailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:hint="@string/email"/>
+
+    <EditText
         android:id="@+id/admissionNum"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -90,6 +107,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp"
         />
 
     <Spinner
@@ -97,11 +118,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp"
         android:entries="@array/Years_of_study"
-        android:prompt="@string/suggestion_prompt"
+        android:prompt="@string/year_prompt"
         />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:gravity="center"
@@ -112,50 +137,26 @@
         android:layout_marginTop="10dp"
         android:layout_weight="1">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/register_photo_btn"
-            android:src="@android:drawable/ic_menu_camera"
-            android:layout_marginEnd="60dp"
-            android:layout_marginRight="60dp"
-            android:contentDescription="@string/content_button"/>
-
         <Button
             android:id="@+id/register_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/register_btn"
             android:enabled="false"
+            android:layout_centerInParent="true"
             android:textAppearance="?android:textAppearanceLarge"/>
 
         <include layout="@layout/set_progress_bar"/>
 
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:layout_weight="1">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id = "@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
-            android:src="@android:drawable/ic_dialog_email"/>
-        <EditText
-            android:id="@+id/ur_name_register"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/fab"
-            android:layout_toStartOf="@id/fab"
-            android:hint="@string/url_name"/>
-
     </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id = "@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_gravity="end"
+        android:src="@android:drawable/ic_dialog_email"/>
 
 </LinearLayout>

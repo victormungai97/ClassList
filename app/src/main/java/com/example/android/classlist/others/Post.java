@@ -45,9 +45,10 @@ public class Post {
     }
 
     /**
-     * Method to carry out POST requests to a given url and return response to request
+     * Method to carry out POST requests to a given url and return response to request using Volley
      * @param url URL to send request to
      * @param message Message to be sent
+     * @param activity Current activity that the user is in
      * @return JSON Object response to request
      */
     public static JSONObject POST(String url, Message message, Activity activity){
@@ -59,7 +60,6 @@ public class Post {
             jsonObject.accumulate(DEPARTMENT, message.getDepartment());
             jsonObject.accumulate(YEAR, message.getYear());
             jsonObject.accumulate(TIME, message.getTime());
-            jsonObject.accumulate(IMAGES, new JSONArray(message.getImages()));
             jsonObject.accumulate(PIC, message.getPic());
             jsonObject.accumulate(LATITUDE,message.getLatitude());
             jsonObject.accumulate(LONGITUDE, message.getLongitude());
@@ -99,11 +99,32 @@ public class Post {
         return sJSONObject;
     }
 
-    /*
-    public static String POST(String url, Message message){
-        return POST(url, message, null).toString();
+    /**
+     * Method to carry out POST requests to a given url and return response to request using OkHttpClient
+     * Preferable when there is need to send a file to the url
+     * @param url URL to send request to
+     * @param message Message to be sent
+     * @return JSON Object response to request
+     */
+    public static JSONObject POST(final String url, Message message){
+        final MultiPartRequestClass multiPartRequestClass = new MultiPartRequestClass();
+        multiPartRequestClass.addObject(NAME, message.getName());
+        multiPartRequestClass.addObject(REG_NO, message.getReg_no());
+        multiPartRequestClass.addObject(EMAIL_ADDRESS, message.getEmail());
+        multiPartRequestClass.addObject(DEPARTMENT, message.getDepartment());
+        multiPartRequestClass.addObject(YEAR, message.getYear());
+        multiPartRequestClass.addFile(FILE, message.getFile());
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sJSONObject = multiPartRequestClass.execute(url);
+            }
+        });
+        t.start();
+
+        return sJSONObject;
     }
-    */
 
     /**
      * Method that maps student's details to their respective columns
